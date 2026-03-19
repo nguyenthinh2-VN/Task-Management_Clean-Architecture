@@ -1,0 +1,16 @@
+package com.example.task_management.application.dto.request.auth;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class GoogleLoginRequest {
+    
+    @NotBlank(message = "ID Token không được để trống")
+    private String idToken;
+    
+}
