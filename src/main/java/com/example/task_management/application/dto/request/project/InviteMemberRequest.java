@@ -1,10 +1,18 @@
 package com.example.task_management.application.dto.request.project;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InviteMemberRequest {
-    private String email;
-
-    public InviteMemberRequest() {}
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    
+    @NotBlank(message = "Email người được mời không được để trống")
+    @Email(message = "Email không đúng định dạng")
+    private String inviteeEmail;
+    
 }

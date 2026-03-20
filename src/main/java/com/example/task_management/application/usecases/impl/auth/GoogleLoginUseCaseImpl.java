@@ -52,11 +52,11 @@ public class GoogleLoginUseCaseImpl implements GoogleLoginUseCase {
             // Username có thể lấy từ email prefix hoặc tên Google
             String username = googleUser.getEmail().split("@")[0];
 
-            User newUser = User.builder()
-                    .email(googleUser.getEmail())
-                    .username(username)
-                    .password(randomPassword)
-                    .build();
+            User newUser = new User();
+            newUser.setEmail(googleUser.getEmail());
+            newUser.setUsername(username);
+            newUser.setPassword(randomPassword);
+            newUser.setVerified(true); // Đăng nhập Google coi như đã xác thực email
 
             return userRepository.save(newUser);
         });

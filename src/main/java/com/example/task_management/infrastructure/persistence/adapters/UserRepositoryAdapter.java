@@ -46,15 +46,17 @@ public class UserRepositoryAdapter implements UserRepository {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .isVerified(user.isVerified())
                 .build();
     }
 
     private User toDomain(UserJpaEntity entity) {
-        return User.builder()
-                .id(entity.getId())
-                .username(entity.getUsername())
-                .email(entity.getEmail())
-                .password(entity.getPassword())
-                .build();
+        User user = new User();
+        user.setId(entity.getId());
+        user.setUsername(entity.getUsername());
+        user.setEmail(entity.getEmail());
+        user.setPassword(entity.getPassword());
+        user.setVerified(entity.isVerified());
+        return user;
     }
 }

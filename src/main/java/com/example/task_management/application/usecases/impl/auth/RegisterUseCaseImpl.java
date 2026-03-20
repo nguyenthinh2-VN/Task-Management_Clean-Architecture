@@ -17,8 +17,8 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
     private final UserMapper userMapper;
 
     public RegisterUseCaseImpl(UserRepository userRepository,
-                               PasswordEncoder passwordEncoder,
-                               UserMapper userMapper) {
+            PasswordEncoder passwordEncoder,
+            UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
@@ -32,11 +32,11 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         }
 
         // 2. Tạo domain entity, hash password
-        User newUser = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
+        User newUser = new User();
+        newUser.setUsername(request.getUsername());
+        newUser.setEmail(request.getEmail());
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setVerified(false);
 
         // 3. Lưu vào DB
         User savedUser = userRepository.save(newUser);
