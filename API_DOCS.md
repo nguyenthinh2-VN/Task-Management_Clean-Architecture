@@ -58,6 +58,19 @@ Mọi API yêu cầu Authen đều phải đính kèm Header:
 ```
 - **Note**: Người tạo tự động trở thành `OWNER` và Status `ACCEPTED`.
 
+### 2.2 Xóa dự án
+- **URL**: `DELETE /api/projects/{projectId}`
+- **Auth Required**: Yes (Yêu cầu phải là `OWNER` của dự án)
+- **Response** (200 OK):
+```json
+{
+    "status": 200,
+    "message": "Dự án đã được xóa thành công",
+    "data": null
+}
+```
+- **Note**: Logic xóa cũng bao gồm việc dọn dẹp (cascade delete) toàn bộ các Công việc (`Tasks`) và Thành viên (`ProjectMembers`) thuộc dự án này để tránh rác CSDL.
+
 ---
 
 ## 3. Lời mời tham gia Dự án (Invitations)

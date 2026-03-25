@@ -10,4 +10,6 @@ public interface ProjectMemberJpaRepository extends JpaRepository<ProjectMemberJ
     Optional<ProjectMemberJpaEntity> findByProjectIdAndUserId(Long projectId, Long userId);
     List<ProjectMemberJpaEntity> findAllByProjectId(Long projectId);
     List<ProjectMemberJpaEntity> findAllByUserIdAndInvitationStatus(Long userId, InvitationStatus status);
+    
+    void deleteAllByProjectId(Long projectId);
 }

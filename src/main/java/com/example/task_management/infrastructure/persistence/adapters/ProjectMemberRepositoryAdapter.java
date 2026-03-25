@@ -76,4 +76,9 @@ public class ProjectMemberRepositoryAdapter implements ProjectMemberRepository {
         member.setInvitationStatus(entity.getInvitationStatus());
         return member;
     }
+
+    @Override
+    public void deleteAllByProjectId(Long projectId) {
+        projectMemberJpaRepository.deleteAllByProjectId(projectId);
+    }
 }

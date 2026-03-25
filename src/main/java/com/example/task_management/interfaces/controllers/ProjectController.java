@@ -4,6 +4,7 @@ import com.example.task_management.application.dto.request.project.CreateProject
 import com.example.task_management.application.dto.response.ApiResponse;
 import com.example.task_management.application.dto.response.project.ProjectResponse;
 import com.example.task_management.application.usecases.project.CreateProjectUseCase;
+import com.example.task_management.application.usecases.project.DeleteProjectUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectController {
 
     private final CreateProjectUseCase createProjectUseCase;
+    private final DeleteProjectUseCase deleteProjectUseCase;
 
-    public ProjectController(CreateProjectUseCase createProjectUseCase) {
+    public ProjectController(
+            CreateProjectUseCase createProjectUseCase,
+            DeleteProjectUseCase deleteProjectUseCase) {
         this.createProjectUseCase = createProjectUseCase;
+        this.deleteProjectUseCase = deleteProjectUseCase;
     }
 
     // API: Tạo dự án mới
@@ -38,4 +43,17 @@ public class ProjectController {
                 .body(ApiResponse.success(HttpStatus.CREATED.value(), "Dự án đã được tạo thành công", responseData));
     }
 
+    // API: Xóa dự án
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<ApiResponse<Void>> deleteProject(
+            @PathVariable Long projectId,
+            Authentication authentication) {
+
+        String currentUserEmail = authentication.getName();
+        
+        deleteProjectUseCase.deleteProject(projectId, currentUserEmail);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK.value(), "Dự án đã được xóa thành công", null));
+    }
 }

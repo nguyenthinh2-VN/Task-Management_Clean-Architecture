@@ -11,4 +11,5 @@ public interface ProjectMemberRepository {
     Optional<ProjectMember> findByProjectIdAndUserId(Long projectId, Long userId);
     List<ProjectMember> findAllByProjectId(Long projectId);
     List<ProjectMember> findAllByUserIdAndInvitationStatus(Long userId, InvitationStatus status);
+    void deleteAllByProjectId(Long projectId);
 }
