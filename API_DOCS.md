@@ -150,3 +150,33 @@ Mọi API yêu cầu Authen đều phải đính kèm Header:
   - `assigneeId` mặc định là `null` (chưa giao việc).
   - `position` tự động = số task hiện có + 1 (gắn vào cuối danh sách).
   - Chuyển trạng thái task dùng các API riêng: `start`, `complete`, `cancel`.
+
+### 4.2 Lấy danh sách Task theo Status
+- **URL**: `GET /api/projects/{projectId}/tasks`
+- **Auth Required**: Yes (Thành viên ACCEPTED của dự án)
+- **Query Params**: `status` (tùy chọn)
+  - Không truyền → lấy **tất cả** task, sort theo `position`.
+  - Truyền → lọc theo status: `TODO`, `IN_PROGRESS`, `DONE`, `CANCELLED`.
+- **Ví dụ**:
+  - `GET /api/projects/1/tasks` → tất cả task
+  - `GET /api/projects/1/tasks?status=TODO` → chỉ task TODO
+- **Response** (200 OK):
+```json
+{
+    "status": 200,
+    "message": "Lấy danh sách task thành công",
+    "data": [
+        {
+            "id": 1,
+            "title": "Thiết kế màn hình Login",
+            "description": "Làm theo Figma đã được duyệt",
+            "status": "TODO",
+            "projectId": 1,
+            "assigneeId": null,
+            "position": 1
+        }
+    ]
+}
+```
+- **Note**: Nếu truyền `status` không hợp lệ sẽ nhận lỗi `400` với thông báo rõ ràng.
+

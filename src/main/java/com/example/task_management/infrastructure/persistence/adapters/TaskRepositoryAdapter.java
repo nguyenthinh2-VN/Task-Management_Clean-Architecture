@@ -2,6 +2,7 @@ package com.example.task_management.infrastructure.persistence.adapters;
 
 import com.example.task_management.application.repositories.TaskRepository;
 import com.example.task_management.domain.entities.Task;
+import com.example.task_management.domain.enums.TaskStatus;
 import com.example.task_management.infrastructure.persistence.jpaentities.TaskJpaEntity;
 import com.example.task_management.infrastructure.persistence.jparepositories.TaskJpaRepository;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,18 @@ public class TaskRepositoryAdapter implements TaskRepository {
     @Override
     public List<Task> findAllByProjectId(Long projectId) {
         return taskJpaRepository.findAllByProjectId(projectId)
+                .stream().map(this::toDomain).toList();
+    }
+
+    @Override
+    public List<Task> findAllByProjectIdOrderByPosition(Long projectId) {
+        return taskJpaRepository.findAllByProjectIdOrderByPositionAsc(projectId)
+                .stream().map(this::toDomain).toList();
+    }
+
+    @Override
+    public List<Task> findAllByProjectIdAndStatus(Long projectId, TaskStatus status) {
+        return taskJpaRepository.findAllByProjectIdAndStatusOrderByPositionAsc(projectId, status)
                 .stream().map(this::toDomain).toList();
     }
 
@@ -74,4 +87,3 @@ public class TaskRepositoryAdapter implements TaskRepository {
         return task;
     }
 }
-
