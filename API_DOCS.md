@@ -112,3 +112,41 @@ Mọi API yêu cầu Authen đều phải đính kèm Header:
 }
 ```
 - **Note**: `true` để ACCEPTED (vào dự án), `false` để REJECTED (từ chối lòi mời).
+
+---
+
+## 4. Quản lý Công việc (Tasks)
+
+> Tasks thuộc về một Project cụ thể. Mọi endpoint đều yêu cầu User đã là thành viên **ACCEPTED** của Project.
+
+### 4.1 Tạo task mới trong dự án
+- **URL**: `POST /api/projects/{projectId}/tasks`
+- **Auth Required**: Yes (Thành viên ACCEPTED của dự án)
+- **Body** (JSON):
+```json
+{
+    "title": "Thiết kế màn hình Login",
+    "description": "Làm theo Figma đã được duyệt"
+}
+```
+- **Response** (201 Created):
+```json
+{
+    "status": 201,
+    "message": "Tạo task thành công",
+    "data": {
+        "id": 1,
+        "title": "Thiết kế màn hình Login",
+        "description": "Làm theo Figma đã được duyệt",
+        "status": "TODO",
+        "projectId": 1,
+        "assigneeId": null,
+        "position": 1
+    }
+}
+```
+- **Note**:
+  - `status` mặc định là `TODO`, không được truyền thủ công.
+  - `assigneeId` mặc định là `null` (chưa giao việc).
+  - `position` tự động = số task hiện có + 1 (gắn vào cuối danh sách).
+  - Chuyển trạng thái task dùng các API riêng: `start`, `complete`, `cancel`.

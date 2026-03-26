@@ -7,4 +7,5 @@ import java.util.List;
 public interface TaskJpaRepository extends JpaRepository<TaskJpaEntity, Long> {
     List<TaskJpaEntity> findAllByProjectId(Long projectId);
     void deleteAllByProjectId(Long projectId);
+    int countByProjectId(Long projectId);
 }

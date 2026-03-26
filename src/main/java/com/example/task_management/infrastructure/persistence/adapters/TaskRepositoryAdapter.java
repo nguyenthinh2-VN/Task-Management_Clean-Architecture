@@ -2,6 +2,7 @@ package com.example.task_management.infrastructure.persistence.adapters;
 
 import com.example.task_management.application.repositories.TaskRepository;
 import com.example.task_management.domain.entities.Task;
+import com.example.task_management.infrastructure.persistence.jpaentities.TaskJpaEntity;
 import com.example.task_management.infrastructure.persistence.jparepositories.TaskJpaRepository;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -18,20 +19,20 @@ public class TaskRepositoryAdapter implements TaskRepository {
 
     @Override
     public Task save(Task task) {
-        // TODO: map domain → jpa, save, map back
-        return null;
+        TaskJpaEntity entity = toJpaEntity(task);
+        TaskJpaEntity saved = taskJpaRepository.save(entity);
+        return toDomain(saved);
     }
 
     @Override
     public Optional<Task> findById(Long id) {
-        // TODO: map
-        return Optional.empty();
+        return taskJpaRepository.findById(id).map(this::toDomain);
     }
 
     @Override
     public List<Task> findAllByProjectId(Long projectId) {
-        // TODO: map list
-        return List.of();
+        return taskJpaRepository.findAllByProjectId(projectId)
+                .stream().map(this::toDomain).toList();
     }
 
     @Override
@@ -43,4 +44,34 @@ public class TaskRepositoryAdapter implements TaskRepository {
     public void deleteAllByProjectId(Long projectId) {
         taskJpaRepository.deleteAllByProjectId(projectId);
     }
+
+    public int countByProjectId(Long projectId) {
+        return taskJpaRepository.countByProjectId(projectId);
+    }
+
+    // ── Mappers ─────────────────────────────────────────────────────
+    private TaskJpaEntity toJpaEntity(Task task) {
+        TaskJpaEntity entity = new TaskJpaEntity();
+        if (task.getId() != null) entity.setId(task.getId());
+        entity.setTitle(task.getTitle());
+        entity.setDescription(task.getDescription());
+        entity.setStatus(task.getStatus());
+        entity.setProjectId(task.getProjectId());
+        entity.setAssigneeId(task.getAssigneeId());
+        entity.setPosition(task.getPosition());
+        return entity;
+    }
+
+    private Task toDomain(TaskJpaEntity entity) {
+        Task task = new Task();
+        task.setId(entity.getId());
+        task.setTitle(entity.getTitle());
+        task.setDescription(entity.getDescription());
+        task.setStatus(entity.getStatus());
+        task.setProjectId(entity.getProjectId());
+        task.setAssigneeId(entity.getAssigneeId());
+        task.setPosition(entity.getPosition());
+        return task;
+    }
 }
+

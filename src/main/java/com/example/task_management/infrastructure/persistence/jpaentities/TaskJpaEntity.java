@@ -25,6 +25,8 @@ public class TaskJpaEntity {
 
     private Long assigneeId;
 
+    private Integer position;
+
     public TaskJpaEntity() {}
 
     public Long getId() { return id; }
@@ -39,4 +41,6 @@ public class TaskJpaEntity {
     public void setProjectId(Long projectId) { this.projectId = projectId; }
     public Long getAssigneeId() { return assigneeId; }
     public void setAssigneeId(Long assigneeId) { this.assigneeId = assigneeId; }
+    public Integer getPosition() { return position; }
+    public void setPosition(Integer position) { this.position = position; }
 }
