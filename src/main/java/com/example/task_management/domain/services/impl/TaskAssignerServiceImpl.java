@@ -5,7 +5,8 @@ import com.example.task_management.application.repositories.UserRepository;
 import com.example.task_management.application.usecases.impl.task.AssignTaskUseCaseImpl;
 import com.example.task_management.domain.entities.ProjectMember;
 import com.example.task_management.domain.enums.InvitationStatus;
-import com.example.task_management.domain.services.TaskAssignerService;
+import com.example.task_management.domain.services.Task.TaskAssignerService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

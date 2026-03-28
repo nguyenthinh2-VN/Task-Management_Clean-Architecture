@@ -42,6 +42,52 @@ Mọi API yêu cầu Authen đều phải đính kèm Header:
 ```
 - **Note**: `isVerified` tự động gạt sang `true`.
 
+### 1.4 Xác thực Email (Verify Email)
+- **URL**: `GET /api/auth/verify?token={token}`
+- **Auth Required**: No
+- **Query Params**: 
+  - `token` (String, Required): Verification token từ email
+- **Response** (200 OK):
+```json
+{
+    "status": 200,
+    "message": "Xác thực email thành công",
+    "data": null
+}
+```
+- **Business Rules**:
+  - Token phải tồn tại và chưa được sử dụng.
+  - Token hết hạn sau 24 giờ.
+  - User phải chưa được xác thực trước đó.
+- **Error Cases**:
+  - `400`: Token không hợp lệ, đã hết hạn, hoặc đã được sử dụng.
+  - `400`: User đã được xác thực trước đó.
+
+### 1.5 Gửi lại Email Xác thực (Resend Verification)
+- **URL**: `POST /api/auth/resend-verification`
+- **Auth Required**: No
+- **Body** (JSON):
+```json
+{
+    "email": "nguyenthinhh4@gmail.com"
+}
+```
+- **Response** (200 OK):
+```json
+{
+    "status": 200,
+    "message": "Email xác thực đã được gửi lại. Vui lòng kiểm tra hộp thư.",
+    "data": null
+}
+```
+- **Business Rules**:
+  - Email phải tồn tại trong hệ thống.
+  - User phải chưa được xác thực.
+  - Token cũ sẽ bị xóa và tạo token mới.
+- **Error Cases**:
+  - `400`: Email không tồn tại hoặc đã được xác thực.
+  - `400`: Request quá nhanh (chỉ được gửi lại sau 60 giây).
+
 ---
 
 ## 2. Quản lý Dự án (Project)

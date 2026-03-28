@@ -3,7 +3,8 @@ package com.example.task_management.domain.services.impl;
 import com.example.task_management.application.repositories.task.TaskQueryRepository;
 import com.example.task_management.domain.entities.Task;
 import com.example.task_management.domain.enums.TaskStatus;
-import com.example.task_management.domain.services.TaskOrderService;
+import com.example.task_management.domain.services.Task.TaskOrderService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

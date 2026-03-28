@@ -9,7 +9,7 @@ import com.example.task_management.application.repositories.task.TaskQueryReposi
 import com.example.task_management.application.usecases.task.AssignTaskUseCase;
 import com.example.task_management.domain.entities.Task;
 import com.example.task_management.domain.entities.User;
-import com.example.task_management.domain.services.TaskAssignerService;
+import com.example.task_management.domain.services.Task.TaskAssignerService;
 import com.example.task_management.interfaces.mappers.TaskMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

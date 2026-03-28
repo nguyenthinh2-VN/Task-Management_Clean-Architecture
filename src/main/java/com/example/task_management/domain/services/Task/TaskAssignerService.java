@@ -1,4 +1,4 @@
-package com.example.task_management.domain.services;
+package com.example.task_management.domain.services.Task;
 
 public interface TaskAssignerService{
     void validateAssignerMembership(Long projectId, Long assignerId);

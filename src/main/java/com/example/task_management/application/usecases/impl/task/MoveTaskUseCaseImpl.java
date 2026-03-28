@@ -12,7 +12,7 @@ import com.example.task_management.domain.entities.Task;
 import com.example.task_management.domain.entities.User;
 import com.example.task_management.domain.enums.InvitationStatus;
 import com.example.task_management.domain.enums.TaskStatus;
-import com.example.task_management.domain.services.TaskOrderService;
+import com.example.task_management.domain.services.Task.TaskOrderService;
 import com.example.task_management.interfaces.mappers.TaskMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
