@@ -1,10 +1,12 @@
 package com.example.task_management.interfaces.controllers;
 
-import com.example.task_management.application.dto.request.project.CreateProjectRequest;
-import com.example.task_management.application.dto.response.ApiResponse;
-import com.example.task_management.application.dto.response.project.ProjectResponse;
+import com.example.task_management.application.DTOUsecase.response.project.ProjectResult;
+import com.example.task_management.interfaces.dto.request.project.CreateProjectRequest;
+import com.example.task_management.interfaces.dto.response.ApiResponse;
+import com.example.task_management.interfaces.dto.response.project.ProjectResponse;
 import com.example.task_management.application.usecases.project.CreateProjectUseCase;
 import com.example.task_management.application.usecases.project.DeleteProjectUseCase;
+import com.example.task_management.interfaces.mappers.ProjectResponseMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,15 @@ public class ProjectController {
 
     private final CreateProjectUseCase createProjectUseCase;
     private final DeleteProjectUseCase deleteProjectUseCase;
+    private final ProjectResponseMapper projectResponseMapper;
 
     public ProjectController(
             CreateProjectUseCase createProjectUseCase,
-            DeleteProjectUseCase deleteProjectUseCase) {
+            DeleteProjectUseCase deleteProjectUseCase,
+            ProjectResponseMapper projectResponseMapper) {
         this.createProjectUseCase = createProjectUseCase;
         this.deleteProjectUseCase = deleteProjectUseCase;
+        this.projectResponseMapper = projectResponseMapper;
     }
 
     // API: Tạo dự án mới
@@ -36,7 +41,8 @@ public class ProjectController {
         String currentUserEmail = authentication.getName();
 
         // Pass việc xử lý vào tầng UseCase
-        ProjectResponse responseData = createProjectUseCase.createProject(request, currentUserEmail);
+        ProjectResult result = createProjectUseCase.createProject(request, currentUserEmail);
+        ProjectResponse responseData = projectResponseMapper.toProjectResponse(result);
 
         // Chuẩn hóa chuỗi trả về
         return ResponseEntity.status(HttpStatus.CREATED)

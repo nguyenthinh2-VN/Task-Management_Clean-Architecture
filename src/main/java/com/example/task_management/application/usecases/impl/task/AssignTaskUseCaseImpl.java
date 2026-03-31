@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.impl.task;
 
-import com.example.task_management.application.dto.request.task.AssignTaskRequest;
-import com.example.task_management.application.dto.response.task.TaskResponse;
+import com.example.task_management.interfaces.dto.request.task.AssignTaskRequest;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.UserRepository;
 import com.example.task_management.application.repositories.task.TaskCommandRepository;
@@ -37,7 +37,7 @@ public class AssignTaskUseCaseImpl implements AssignTaskUseCase {
 
     @Override
     @Transactional
-    public TaskResponse assignTask(Long projectId, Long taskId, AssignTaskRequest request, String userEmail) {
+    public TaskResult assignTask(Long projectId, Long taskId, AssignTaskRequest request, String userEmail) {
         log.info("[AssignTask] Bắt đầu - projectId={}, taskId={}, assigneeId={}", 
                 projectId, taskId, request.getAssigneeId());
 
@@ -84,7 +84,7 @@ public class AssignTaskUseCaseImpl implements AssignTaskUseCase {
         Task savedTask = taskCommandRepository.save(task);
         log.info("[AssignTask] Hoàn thành - taskId={}, assigneeId={}", savedTask.getId(), assigneeId);
         
-        return taskMapper.toTaskResponse(savedTask);
+        return taskMapper.toTaskResult(savedTask);
     }
 
 

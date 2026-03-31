@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.impl.task;
 
-import com.example.task_management.application.dto.request.task.CreateTaskRequest;
-import com.example.task_management.application.dto.response.task.TaskResponse;
+import com.example.task_management.interfaces.dto.request.task.CreateTaskRequest;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.repositories.TaskRepository;
@@ -44,7 +44,7 @@ public class CreateTaskUseCaseImpl implements CreateTaskUseCase {
 
         @Override
         @Transactional
-        public TaskResponse createTask(Long projectId, CreateTaskRequest request, String userEmail) {
+        public TaskResult createTask(Long projectId, CreateTaskRequest request, String userEmail) {
                 log.info("[CreateTask] Bắt đầu - projectId={}", projectId);
 
                 // Rule 1: Project phải tồn tại
@@ -96,6 +96,6 @@ public class CreateTaskUseCaseImpl implements CreateTaskUseCase {
                         savedTask.getId(), projectId);
 
                 // Trả về DTO sử dụng mapper
-                return taskMapper.toTaskResponse(savedTask);
+                return taskMapper.toTaskResult(savedTask);
         }
 }

@@ -1,16 +1,15 @@
 package com.example.task_management.application.usecases.impl.task;
 
-import com.example.task_management.application.dto.request.task.MoveTaskRequest;
-import com.example.task_management.application.dto.response.task.TaskResponse;
-import com.example.task_management.application.repositories.ProjectMemberRepository;
-import com.example.task_management.application.repositories.UserRepository;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
+import com.example.task_management.domain.services.PermissionService;
+import com.example.task_management.domain.services.Task.TaskStatusParser;
+import com.example.task_management.interfaces.dto.request.task.MoveTaskRequest;
 import com.example.task_management.application.repositories.task.TaskCommandRepository;
 import com.example.task_management.application.repositories.task.TaskQueryRepository;
 import com.example.task_management.application.usecases.task.MoveTaskUseCase;
-import com.example.task_management.domain.entities.ProjectMember;
+
 import com.example.task_management.domain.entities.Task;
-import com.example.task_management.domain.entities.User;
-import com.example.task_management.domain.enums.InvitationStatus;
+
 import com.example.task_management.domain.enums.TaskStatus;
 import com.example.task_management.domain.services.Task.TaskOrderService;
 import com.example.task_management.interfaces.mappers.TaskMapper;
@@ -26,31 +25,25 @@ public class MoveTaskUseCaseImpl implements MoveTaskUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(MoveTaskUseCaseImpl.class);
 
-    private final ProjectMemberRepository projectMemberRepository;
-    private final UserRepository userRepository;
     private final TaskQueryRepository taskQueryRepository;
     private final TaskCommandRepository taskCommandRepository;
     private final TaskOrderService taskOrderService;
     private final TaskMapper taskMapper;
+    private final TaskStatusParser taskStatusParser;
+    private final PermissionService permissionService;
 
-    public MoveTaskUseCaseImpl(
-            ProjectMemberRepository projectMemberRepository,
-            UserRepository userRepository,
-            TaskQueryRepository taskQueryRepository,
-            TaskCommandRepository taskCommandRepository,
-            TaskOrderService taskOrderService,
-            TaskMapper taskMapper) {
-        this.projectMemberRepository = projectMemberRepository;
-        this.userRepository = userRepository;
+    public MoveTaskUseCaseImpl(TaskQueryRepository taskQueryRepository, TaskCommandRepository taskCommandRepository, TaskOrderService taskOrderService, TaskMapper taskMapper, TaskStatusParser taskStatusParser, PermissionService permissionService) {
         this.taskQueryRepository = taskQueryRepository;
         this.taskCommandRepository = taskCommandRepository;
         this.taskOrderService = taskOrderService;
         this.taskMapper = taskMapper;
+        this.taskStatusParser = taskStatusParser;
+        this.permissionService = permissionService;
     }
 
     @Override
     @Transactional
-    public TaskResponse moveTask(Long projectId, Long taskId, MoveTaskRequest request, String userEmail) {
+    public TaskResult moveTask(Long projectId, Long taskId, MoveTaskRequest request, String userEmail) {
         log.info("[MoveTask] Bắt đầu - projectId={}, taskId={}, toStatus={}, toPosition={}", 
                 projectId, taskId, request.getToStatus(), request.getToPosition());
 
@@ -64,20 +57,23 @@ public class MoveTaskUseCaseImpl implements MoveTaskUseCase {
                 task.getId(), task.getStatus(), task.getPosition());
 
         // Parse status
-        TaskStatus toStatus = parseStatus(request.getToStatus());
-        log.debug("[MoveTask] Parsed status: {}", toStatus);
+        // Parse
+        TaskStatus toStatus = taskStatusParser.parseStatus(request.getToStatus());
+        log.debug("[MoveTask] Parsed toStatus={}", toStatus);
 
-        // Validate
-        log.debug("[MoveTask] Validate move...");
+// Validate
+        log.debug("[MoveTask] Validating move...");
         task.validateMove(toStatus, request.getToPosition(), projectId);
-        Long userId = validateUserPermission(projectId, userEmail);
-        log.debug("[MoveTask] Validation OK, userId={}", userId);
 
-        // Thực hiện move qua TaskOrderService
-        log.debug("[MoveTask] Gọi TaskOrderService...");
+        Long userId = permissionService.validateProjectMember(projectId, userEmail);
+        log.debug("[MoveTask] Validation OK userId={}", userId);
+
+// Execute
+        log.debug("[MoveTask] Executing move...");
         List<Task> tasksToUpdate = executeMove(projectId, task, toStatus, request.getToPosition());
-        log.debug("[MoveTask] Cần cập nhật {} tasks", tasksToUpdate.size());
 
+// Result
+        log.debug("[MoveTask] Tasks affected={}", tasksToUpdate.size());
         // Lưu các task affected
         if (!tasksToUpdate.isEmpty()) {
             taskCommandRepository.saveAll(tasksToUpdate);
@@ -87,41 +83,9 @@ public class MoveTaskUseCaseImpl implements MoveTaskUseCase {
         log.info("[MoveTask] Hoàn thành - taskId={}, newStatus={}, newPosition={}", 
                 savedTask.getId(), savedTask.getStatus(), savedTask.getPosition());
 
-        return taskMapper.toTaskResponse(savedTask);
+        return taskMapper.toTaskResult(savedTask);
     }
 
-    private TaskStatus parseStatus(String statusStr) {
-        try {
-            return TaskStatus.valueOf(statusStr);
-        } catch (IllegalArgumentException e) {
-            log.error("[MoveTask] Status không hợp lệ: {}", statusStr);
-            throw new IllegalArgumentException("Trạng thái không hợp lệ: " + statusStr);
-        }
-    }
-
-    private Long validateUserPermission(Long projectId, String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> {
-                    log.error("[MoveTask] User không tồn tại");
-                    return new IllegalArgumentException("Người dùng không tồn tại");
-                });
-        log.debug("[MoveTask] User tồn tại: id={}", user.getId());
-
-        ProjectMember membership = projectMemberRepository
-                .findByProjectIdAndUserId(projectId, user.getId())
-                .orElseThrow(() -> {
-                    log.error("[MoveTask] User không phải thành viên project: userId={}", user.getId());
-                    return new IllegalArgumentException("Bạn không phải thành viên của dự án này");
-                });
-
-        if (membership.getInvitationStatus() != InvitationStatus.ACCEPTED) {
-            log.error("[MoveTask] User chưa ACCEPTED: userId={}, status={}", 
-                    user.getId(), membership.getInvitationStatus());
-            throw new IllegalArgumentException("Bạn chưa chấp nhận lời mời vào dự án này");
-        }
-        log.debug("[MoveTask] User permission OK");
-        return user.getId();
-    }
 
     private List<Task> executeMove(Long projectId, Task task, TaskStatus toStatus, Integer toPosition) {
         TaskStatus fromStatus = task.getStatus();

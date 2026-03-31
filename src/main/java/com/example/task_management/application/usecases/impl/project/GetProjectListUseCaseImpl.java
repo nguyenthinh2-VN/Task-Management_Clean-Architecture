@@ -1,6 +1,6 @@
 package com.example.task_management.application.usecases.impl.project;
 
-import com.example.task_management.application.dto.response.project.ProjectResponse;
+import com.example.task_management.application.DTOUsecase.response.project.ProjectResult;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.usecases.project.GetProjectListUseCase;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class GetProjectListUseCaseImpl implements GetProjectListUseCase {
     }
 
     @Override
-    public List<ProjectResponse> getProjectsByOwner(Long ownerId) {
+    public List<ProjectResult> getProjectsByOwner(Long ownerId) {
         // TODO: implement logic
         return null;
     }

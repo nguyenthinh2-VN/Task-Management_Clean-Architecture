@@ -1,6 +1,6 @@
 package com.example.task_management.infrastructure.security;
 
-import com.example.task_management.application.dto.response.ApiResponse;
+import com.example.task_management.interfaces.dto.response.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;

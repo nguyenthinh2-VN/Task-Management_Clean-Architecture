@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.impl.auth;
 
-import com.example.task_management.application.dto.request.auth.RegisterRequest;
-import com.example.task_management.application.dto.response.auth.RegisterResponse;
+import com.example.task_management.interfaces.dto.request.auth.RegisterRequest;
+import com.example.task_management.application.DTOUsecase.response.auth.RegisterResult;
 import com.example.task_management.application.repositories.UserRepository;
 import com.example.task_management.application.repositories.VerificationTokenRepository;
 import com.example.task_management.application.usecases.auth.RegisterUseCase;
@@ -40,7 +40,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
 
     @Override
     @Transactional
-    public RegisterResponse register(RegisterRequest request) {
+    public RegisterResult register(RegisterRequest request) {
         log.info("[Register] Bắt đầu đăng ký user: email={}", request.getEmail());
 
         // 1. Kiểm tra email đã tồn tại chưa
@@ -75,7 +75,7 @@ public class RegisterUseCaseImpl implements RegisterUseCase {
         }
 
         // 6. Convert → DTO response
-        RegisterResponse response = userMapper.toRegisterResponse(savedUser);
+        RegisterResult response = userMapper.toRegisterResponse(savedUser);
         log.info("[Register] Hoàn thành đăng ký");
         return response;
     }

@@ -1,12 +1,14 @@
 package com.example.task_management.interfaces.controllers;
 
-import com.example.task_management.application.dto.request.project.InviteMemberRequest;
-import com.example.task_management.application.dto.request.project.RespondInvitationRequest;
-import com.example.task_management.application.dto.response.ApiResponse;
-import com.example.task_management.application.dto.response.project.InvitationResponse;
+import com.example.task_management.application.DTOUsecase.response.project.InvitationResult;
+import com.example.task_management.interfaces.dto.request.project.InviteMemberRequest;
+import com.example.task_management.interfaces.dto.request.project.RespondInvitationRequest;
+import com.example.task_management.interfaces.dto.response.ApiResponse;
+import com.example.task_management.interfaces.dto.response.project.InvitationResponse;
 import com.example.task_management.application.usecases.project.GetPendingInvitationsUseCase;
 import com.example.task_management.application.usecases.project.InviteMemberUseCase;
 import com.example.task_management.application.usecases.project.RespondInvitationUseCase;
+import com.example.task_management.interfaces.mappers.InvitationResponseMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +24,17 @@ public class InvitationController {
     private final InviteMemberUseCase inviteMemberUseCase;
     private final GetPendingInvitationsUseCase getPendingInvitationsUseCase;
     private final RespondInvitationUseCase respondInvitationUseCase;
+    private final InvitationResponseMapper invitationResponseMapper;
 
     public InvitationController(
             InviteMemberUseCase inviteMemberUseCase, 
             GetPendingInvitationsUseCase getPendingInvitationsUseCase, 
-            RespondInvitationUseCase respondInvitationUseCase) {
+            RespondInvitationUseCase respondInvitationUseCase,
+            InvitationResponseMapper invitationResponseMapper) {
         this.inviteMemberUseCase = inviteMemberUseCase;
         this.getPendingInvitationsUseCase = getPendingInvitationsUseCase;
         this.respondInvitationUseCase = respondInvitationUseCase;
+        this.invitationResponseMapper = invitationResponseMapper;
     }
 
     // 1. API - Gửi lời mời (Dành cho Chủ Dự án)
@@ -47,7 +52,10 @@ public class InvitationController {
     @GetMapping("/users/me/invitations")
     public ResponseEntity<ApiResponse<List<InvitationResponse>>> getMyPendingInvitations(Authentication authentication) {
         
-        List<InvitationResponse> pendingInvitations = getPendingInvitationsUseCase.getPendingInvitations(authentication.getName());
+        List<InvitationResult> results = getPendingInvitationsUseCase.getPendingInvitations(authentication.getName());
+        List<InvitationResponse> pendingInvitations = results.stream()
+                .map(invitationResponseMapper::toInvitationResponse)
+                .toList();
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "Lấy danh sách lời mời thành công", pendingInvitations));
     }
 

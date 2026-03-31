@@ -1,14 +1,14 @@
 package com.example.task_management.interfaces.mappers;
 
-import com.example.task_management.application.dto.response.task.TaskResponse;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
 import com.example.task_management.domain.entities.Task;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskMapper {
 
-    public TaskResponse toTaskResponse(Task task) {
-        return TaskResponse.builder()
+    public TaskResult toTaskResult(Task task) {
+        return TaskResult.builder()
                 .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())

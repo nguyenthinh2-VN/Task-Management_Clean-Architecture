@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.impl.project;
 
-import com.example.task_management.application.dto.request.project.CreateProjectRequest;
-import com.example.task_management.application.dto.response.project.ProjectResponse;
+import com.example.task_management.interfaces.dto.request.project.CreateProjectRequest;
+import com.example.task_management.application.DTOUsecase.response.project.ProjectResult;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.repositories.UserRepository;
@@ -36,7 +36,7 @@ public class CreateProjectUseCaseImpl implements CreateProjectUseCase {
 
     @Override
     @Transactional
-    public ProjectResponse createProject(CreateProjectRequest request, String currentUserEmail) {
+    public ProjectResult createProject(CreateProjectRequest request, String currentUserEmail) {
         // 1. Lấy thông tin User hiện tại từ Database thông qua Email lấy từ
         // SecurityContext
         User owner = userRepository.findByEmail(currentUserEmail)

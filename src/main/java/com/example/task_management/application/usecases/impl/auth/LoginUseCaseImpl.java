@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.impl.auth;
 
-import com.example.task_management.application.dto.request.auth.LoginRequest;
-import com.example.task_management.application.dto.response.auth.LoginResponse;
+import com.example.task_management.interfaces.dto.request.auth.LoginRequest;
+import com.example.task_management.application.DTOUsecase.response.auth.AuthResult;
 import com.example.task_management.application.repositories.UserRepository;
 import com.example.task_management.application.usecases.auth.LoginUseCase;
 import com.example.task_management.domain.entities.User;
@@ -25,7 +25,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
     }
 
     @Override
-    public LoginResponse login(LoginRequest request) {
+    public AuthResult login(LoginRequest request) {
         // 1. Tìm user theo email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email hoặc mật khẩu không đúng"));
@@ -39,6 +39,9 @@ public class LoginUseCaseImpl implements LoginUseCase {
         String token = jwtTokenProvider.generateToken(user.getEmail());
 
         // 4. Trả về token
-        return new LoginResponse(token);
+        return AuthResult.builder()
+                .accessToken(token)
+                .tokenType("Bearer")
+                .build();
     }
 }

@@ -1,18 +1,18 @@
 package com.example.task_management.interfaces.mappers;
 
-import com.example.task_management.application.dto.response.project.ProjectResponse;
+import com.example.task_management.application.DTOUsecase.response.project.ProjectResult;
 import com.example.task_management.domain.entities.Project;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectMapper {
 
-    public ProjectResponse toProjectResponse(Project project) {
+    public ProjectResult toProjectResponse(Project project) {
         if (project == null) {
             return null;
         }
 
-        return ProjectResponse.builder()
+        return ProjectResult.builder()
                 .id(project.getId())
                 .name(project.getName())
                 .description(project.getDescription())

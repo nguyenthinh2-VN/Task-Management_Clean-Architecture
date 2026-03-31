@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.impl.project;
 
-import com.example.task_management.application.dto.request.project.CreateProjectRequest;
-import com.example.task_management.application.dto.response.project.ProjectResponse;
+import com.example.task_management.interfaces.dto.request.project.CreateProjectRequest;
+import com.example.task_management.interfaces.dto.response.project.ProjectResponse;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.repositories.UserRepository;

@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.task;
 
-import com.example.task_management.application.dto.request.task.CreateTaskRequest;
-import com.example.task_management.application.dto.response.task.TaskResponse;
+import com.example.task_management.interfaces.dto.request.task.CreateTaskRequest;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
 
 public interface CreateTaskUseCase {
 
@@ -11,8 +11,8 @@ public interface CreateTaskUseCase {
      * @param projectId  ID của dự án chứa Task
      * @param request    Payload: title, description
      * @param userEmail  Email người dùng đang login (lấy từ JWT)
-     * @return TaskResponse chứa thông tin Task đã tạo
+     * @return TaskResult chứa thông tin Task đã tạo
      */
-    TaskResponse createTask(Long projectId, CreateTaskRequest request, String userEmail);
+    TaskResult createTask(Long projectId, CreateTaskRequest request, String userEmail);
 
 }

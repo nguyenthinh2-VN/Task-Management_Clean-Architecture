@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.task;
 
-import com.example.task_management.application.dto.request.task.MoveTaskRequest;
-import com.example.task_management.application.dto.response.task.TaskResponse;
+import com.example.task_management.interfaces.dto.request.task.MoveTaskRequest;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
 
 public interface MoveTaskUseCase {
 
@@ -12,8 +12,8 @@ public interface MoveTaskUseCase {
      * @param taskId     ID của Task cần di chuyển
      * @param request    Payload: toStatus, toPosition
      * @param userEmail  Email người dùng đang login (lấy từ JWT)
-     * @return TaskResponse chứa thông tin Task sau khi di chuyển
+     * @return TaskResult chứa thông tin Task sau khi di chuyển
      */
-    TaskResponse moveTask(Long projectId, Long taskId, MoveTaskRequest request, String userEmail);
+    TaskResult moveTask(Long projectId, Long taskId, MoveTaskRequest request, String userEmail);
 
 }

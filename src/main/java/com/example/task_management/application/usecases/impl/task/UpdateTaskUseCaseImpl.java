@@ -1,7 +1,7 @@
 package com.example.task_management.application.usecases.impl.task;
 
-import com.example.task_management.application.dto.request.task.UpdateTaskRequest;
-import com.example.task_management.application.dto.response.task.TaskResponse;
+import com.example.task_management.interfaces.dto.request.task.UpdateTaskRequest;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
 import com.example.task_management.application.repositories.TaskRepository;
 import com.example.task_management.application.usecases.task.UpdateTaskUseCase;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class UpdateTaskUseCaseImpl implements UpdateTaskUseCase {
     }
 
     @Override
-    public TaskResponse updateTask(Long taskId, UpdateTaskRequest request) {
+    public TaskResult updateTask(Long taskId, UpdateTaskRequest request) {
         // TODO: implement logic
         return null;
     }

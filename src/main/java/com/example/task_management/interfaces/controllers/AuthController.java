@@ -1,16 +1,20 @@
 package com.example.task_management.interfaces.controllers;
 
-import com.example.task_management.application.dto.request.auth.GoogleLoginRequest;
-import com.example.task_management.application.dto.request.auth.LoginRequest;
-import com.example.task_management.application.dto.request.auth.RegisterRequest;
-import com.example.task_management.application.dto.response.ApiResponse;
-import com.example.task_management.application.dto.response.auth.LoginResponse;
-import com.example.task_management.application.dto.response.auth.RegisterResponse;
+import com.example.task_management.application.DTOUsecase.response.auth.AuthResult;
+import com.example.task_management.application.DTOUsecase.response.auth.RegisterResult;
+import com.example.task_management.interfaces.dto.request.auth.GoogleLoginRequest;
+import com.example.task_management.interfaces.dto.request.auth.LoginRequest;
+import com.example.task_management.interfaces.dto.request.auth.RegisterRequest;
+import com.example.task_management.interfaces.dto.response.ApiResponse;
+import com.example.task_management.interfaces.dto.response.auth.LoginResponse;
+import com.example.task_management.interfaces.dto.response.auth.RegisterResponse;
 import com.example.task_management.application.usecases.auth.GoogleLoginUseCase;
 import com.example.task_management.application.usecases.auth.LoginUseCase;
 import com.example.task_management.application.usecases.auth.RegisterUseCase;
 import com.example.task_management.application.usecases.auth.ResendVerificationUseCase;
 import com.example.task_management.application.usecases.auth.VerifyEmailUseCase;
+import com.example.task_management.interfaces.mappers.AuthResponseMapper;
+import com.example.task_management.interfaces.mappers.RegisterResponseMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,22 +31,29 @@ public class AuthController {
     private final GoogleLoginUseCase googleLoginUseCase;
     private final VerifyEmailUseCase verifyEmailUseCase;
     private final ResendVerificationUseCase resendVerificationUseCase;
+    private final AuthResponseMapper authResponseMapper;
+    private final RegisterResponseMapper registerResponseMapper;
 
     public AuthController(RegisterUseCase registerUseCase, LoginUseCase loginUseCase, 
                           GoogleLoginUseCase googleLoginUseCase,
                           VerifyEmailUseCase verifyEmailUseCase,
-                          ResendVerificationUseCase resendVerificationUseCase) {
+                          ResendVerificationUseCase resendVerificationUseCase,
+                          AuthResponseMapper authResponseMapper,
+                          RegisterResponseMapper registerResponseMapper) {
         this.registerUseCase = registerUseCase;
         this.loginUseCase = loginUseCase;
         this.googleLoginUseCase = googleLoginUseCase;
         this.verifyEmailUseCase = verifyEmailUseCase;
         this.resendVerificationUseCase = resendVerificationUseCase;
+        this.authResponseMapper = authResponseMapper;
+        this.registerResponseMapper = registerResponseMapper;
     }
 
     // UC01 – Đăng ký
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> register(@Valid @RequestBody RegisterRequest request) {
-        RegisterResponse data = registerUseCase.register(request);
+        RegisterResult result = registerUseCase.register(request);
+        RegisterResponse data = registerResponseMapper.toRegisterResponse(result);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(HttpStatus.CREATED.value(), "Đăng ký thành công", data));
     }
@@ -50,14 +61,16 @@ public class AuthController {
     // UC02 – Đăng nhập
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse data = loginUseCase.login(request);
+        AuthResult result = loginUseCase.login(request);
+        LoginResponse data = authResponseMapper.toLoginResponse(result);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "Đăng nhập thành công", data));
     }
 
     // UC03 – Đăng nhập bằng Google
     @PostMapping("/login/google")
     public ResponseEntity<ApiResponse<LoginResponse>> loginWithGoogle(@Valid @RequestBody GoogleLoginRequest request) {
-        LoginResponse data = googleLoginUseCase.loginWithGoogle(request);
+        AuthResult result = googleLoginUseCase.loginWithGoogle(request);
+        LoginResponse data = authResponseMapper.toLoginResponse(result);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "Đăng nhập Google thành công", data));
     }
 

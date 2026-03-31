@@ -1,6 +1,6 @@
 package com.example.task_management.application.usecases.impl.task;
 
-import com.example.task_management.application.dto.response.task.TaskResponse;
+import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.repositories.TaskRepository;
@@ -36,7 +36,7 @@ public class GetTaskUseCaseImpl implements GetTaskUseCase {
     }
 
     @Override
-    public List<TaskResponse> getTasks(Long projectId, String status, String userEmail) {
+    public List<TaskResult> getTasks(Long projectId, String status, String userEmail) {
 
         // Rule 1: Project phải tồn tại
         projectRepository.findById(projectId)
@@ -76,7 +76,7 @@ public class GetTaskUseCaseImpl implements GetTaskUseCase {
 
         // Map → DTO
         return tasks.stream()
-                .map(task -> TaskResponse.builder()
+                .map(task -> TaskResult.builder()
                         .id(task.getId())
                         .title(task.getTitle())
                         .description(task.getDescription())

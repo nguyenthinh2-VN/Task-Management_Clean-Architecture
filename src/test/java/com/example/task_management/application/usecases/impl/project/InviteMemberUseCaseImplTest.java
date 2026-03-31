@@ -1,6 +1,6 @@
 package com.example.task_management.application.usecases.impl.project;
 
-import com.example.task_management.application.dto.request.project.InviteMemberRequest;
+import com.example.task_management.interfaces.dto.request.project.InviteMemberRequest;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.repositories.UserRepository;

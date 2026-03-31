@@ -1,6 +1,6 @@
 package com.example.task_management.application.usecases.project;
 
-import com.example.task_management.application.dto.response.project.InvitationResponse;
+import com.example.task_management.application.DTOUsecase.response.project.InvitationResult;
 import java.util.List;
 
 public interface GetPendingInvitationsUseCase {
@@ -11,6 +11,6 @@ public interface GetPendingInvitationsUseCase {
      * @param userEmail Email người dùng đang login
      * @return Danh sách DTO chứa lời mời
      */
-    List<InvitationResponse> getPendingInvitations(String userEmail);
+    List<InvitationResult> getPendingInvitations(String userEmail);
     
 }

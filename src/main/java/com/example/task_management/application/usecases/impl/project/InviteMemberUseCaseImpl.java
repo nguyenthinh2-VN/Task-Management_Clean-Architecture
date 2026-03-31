@@ -1,6 +1,6 @@
 package com.example.task_management.application.usecases.impl.project;
 
-import com.example.task_management.application.dto.request.project.InviteMemberRequest;
+import com.example.task_management.interfaces.dto.request.project.InviteMemberRequest;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.repositories.UserRepository;
@@ -8,14 +8,10 @@ import com.example.task_management.application.usecases.project.InviteMemberUseC
 import com.example.task_management.domain.entities.Project;
 import com.example.task_management.domain.entities.ProjectMember;
 import com.example.task_management.domain.entities.User;
-import com.example.task_management.domain.enums.InvitationStatus;
-import com.example.task_management.domain.enums.MemberRole;
 import com.example.task_management.domain.factory.ProjectMemberFactory;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class InviteMemberUseCaseImpl implements InviteMemberUseCase {

@@ -1,8 +1,8 @@
 package com.example.task_management.application.usecases.impl.auth;
 
-import com.example.task_management.application.dto.request.auth.GoogleLoginRequest;
-import com.example.task_management.application.dto.response.auth.GoogleUserInfo;
-import com.example.task_management.application.dto.response.auth.LoginResponse;
+import com.example.task_management.interfaces.dto.request.auth.GoogleLoginRequest;
+import com.example.task_management.interfaces.dto.response.auth.GoogleUserInfo;
+import com.example.task_management.application.DTOUsecase.response.auth.AuthResult;
 import com.example.task_management.application.repositories.OAuth2Repository;
 import com.example.task_management.application.repositories.UserRepository;
 import com.example.task_management.application.usecases.auth.GoogleLoginUseCase;
@@ -33,7 +33,7 @@ public class GoogleLoginUseCaseImpl implements GoogleLoginUseCase {
     }
 
     @Override
-    public LoginResponse loginWithGoogle(GoogleLoginRequest request) {
+    public AuthResult loginWithGoogle(GoogleLoginRequest request) {
         // 1. Giải mã và xác thực Google ID Token (Sử dụng Port, không trực tiếp gọi
         // Google SDK ở đây)
         GoogleUserInfo googleUser = oAuth2Repository.verifyGoogleIdToken(request.getIdToken());
@@ -64,6 +64,9 @@ public class GoogleLoginUseCaseImpl implements GoogleLoginUseCase {
         // 3. Tạo Token nội bộ hệ thống (JWT)
         String accessToken = jwtTokenProvider.generateToken(user.getEmail());
 
-        return new LoginResponse(accessToken, "Bearer");
+        return AuthResult.builder()
+                .accessToken(accessToken)
+                .tokenType("Bearer")
+                .build();
     }
 }

@@ -1,8 +1,8 @@
 package com.example.task_management.application.usecases.auth;
 
-import com.example.task_management.application.dto.request.auth.GoogleLoginRequest;
-import com.example.task_management.application.dto.response.auth.LoginResponse;
+import com.example.task_management.interfaces.dto.request.auth.GoogleLoginRequest;
+import com.example.task_management.application.DTOUsecase.response.auth.AuthResult;
 
 public interface GoogleLoginUseCase {
-    LoginResponse loginWithGoogle(GoogleLoginRequest request);
+    AuthResult loginWithGoogle(GoogleLoginRequest request);
 }

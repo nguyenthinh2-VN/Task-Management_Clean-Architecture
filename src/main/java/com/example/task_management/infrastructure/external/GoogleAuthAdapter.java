@@ -1,6 +1,6 @@
 package com.example.task_management.infrastructure.external;
 
-import com.example.task_management.application.dto.response.auth.GoogleUserInfo;
+import com.example.task_management.interfaces.dto.response.auth.GoogleUserInfo;
 import com.example.task_management.application.repositories.OAuth2Repository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;

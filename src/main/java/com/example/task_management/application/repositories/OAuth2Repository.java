@@ -1,6 +1,6 @@
 package com.example.task_management.application.repositories;
 
-import com.example.task_management.application.dto.response.auth.GoogleUserInfo;
+import com.example.task_management.interfaces.dto.response.auth.GoogleUserInfo;
 
 public interface OAuth2Repository {
     

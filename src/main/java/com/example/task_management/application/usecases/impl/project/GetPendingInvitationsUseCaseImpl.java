@@ -1,6 +1,6 @@
 package com.example.task_management.application.usecases.impl.project;
 
-import com.example.task_management.application.dto.response.project.InvitationResponse;
+import com.example.task_management.application.DTOUsecase.response.project.InvitationResult;
 import com.example.task_management.application.repositories.ProjectMemberRepository;
 import com.example.task_management.application.repositories.ProjectRepository;
 import com.example.task_management.application.repositories.UserRepository;
@@ -31,7 +31,7 @@ public class GetPendingInvitationsUseCaseImpl implements GetPendingInvitationsUs
     }
 
     @Override
-    public List<InvitationResponse> getPendingInvitations(String userEmail) {
+    public List<InvitationResult> getPendingInvitations(String userEmail) {
         // 1. Lấy thông tin người gọi API
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Người dùng không tồn tại"));
@@ -41,7 +41,7 @@ public class GetPendingInvitationsUseCaseImpl implements GetPendingInvitationsUs
                 .findAllByUserIdAndInvitationStatus(user.getId(), InvitationStatus.PENDING);
 
         // 3. Mapping từ Domain sang DTO
-        List<InvitationResponse> responses = new ArrayList<>();
+        List<InvitationResult> responses = new ArrayList<>();
         for (ProjectMember membership : pendingMemberships) {
             
             // Query lấy Tên Dự án tương ứng cho List (Vì ProjectMember hiện chưa chứa Tên dự án)
@@ -49,7 +49,7 @@ public class GetPendingInvitationsUseCaseImpl implements GetPendingInvitationsUs
                     .map(Project::getName)
                     .orElse("Dự án không xác định");
 
-            responses.add(InvitationResponse.builder()
+            responses.add(InvitationResult.builder()
                     .id(membership.getId())
                     .projectId(membership.getProjectId())
                     .projectName(projectName)

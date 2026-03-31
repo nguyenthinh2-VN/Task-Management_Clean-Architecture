@@ -1,6 +1,6 @@
 package com.example.task_management.interfaces.controllers;
 
-import com.example.task_management.application.dto.response.ApiResponse;
+import com.example.task_management.interfaces.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
