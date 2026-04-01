@@ -1,0 +1,5 @@
+com\example\task_management\application\usecases\impl\project\CreateProjectUseCaseImplTest.class
+com\example\task_management\application\usecases\impl\project\DeleteProjectUseCaseImplTest.class
+com\example\task_management\application\usecases\impl\project\RespondInvitationUseCaseImplTest.class
+com\example\task_management\application\usecases\impl\project\InviteMemberUseCaseImplTest.class
+com\example\task_management\TaskManagementApplicationTests.class
