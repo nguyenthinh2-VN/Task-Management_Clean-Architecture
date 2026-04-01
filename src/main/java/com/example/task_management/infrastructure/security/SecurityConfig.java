@@ -19,13 +19,16 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
+    private final RateLimitFilter rateLimitFilter;
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider,
                           CustomUserDetailsService customUserDetailsService,
-                          JwtAuthEntryPoint jwtAuthEntryPoint) {
+                          JwtAuthEntryPoint jwtAuthEntryPoint,
+                          RateLimitFilter rateLimitFilter) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
@@ -40,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
             )
+            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

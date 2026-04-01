@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface VerificationTokenJpaRepository extends JpaRepository<VerificationTokenJpaEntity, Long> {
     Optional<VerificationTokenJpaEntity> findByToken(String token);
     Optional<VerificationTokenJpaEntity> findByUserId(Long userId);
+    Optional<VerificationTokenJpaEntity> findTopByUserIdOrderByCreatedAtDesc(Long userId);
     void deleteByUserId(Long userId);
 }

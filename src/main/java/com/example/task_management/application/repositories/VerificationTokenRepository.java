@@ -12,6 +12,8 @@ public interface VerificationTokenRepository {
 
     Optional<VerificationToken> findByUserId(Long userId);
 
+    Optional<VerificationToken> findLatestByUserId(Long userId);
+
     void deleteByUserId(Long userId);
 
     void delete(VerificationToken token);

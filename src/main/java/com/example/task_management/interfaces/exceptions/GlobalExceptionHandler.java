@@ -1,5 +1,6 @@
 package com.example.task_management.interfaces.exceptions;
 
+import com.example.task_management.domain.exceptions.UserNotVerifiedException;
 import com.example.task_management.interfaces.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
                 .forEach(err -> fieldErrors.put(err.getField(), err.getDefaultMessage()));
 
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Dữ liệu đầu vào không hợp lệ", fieldErrors);
+    }
+
+    // Xử lý lỗi user chưa xác minh
+    @ExceptionHandler(UserNotVerifiedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleUserNotVerified(UserNotVerifiedException ex) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage(), null);
     }
 
     // Xử lý lỗi business logic (email đã tồn tại, sai mật khẩu...)

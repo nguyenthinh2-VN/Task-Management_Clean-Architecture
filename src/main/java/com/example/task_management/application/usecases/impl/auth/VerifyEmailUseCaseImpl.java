@@ -36,16 +36,7 @@ public class VerifyEmailUseCaseImpl implements VerifyEmailUseCase {
                 });
 
         // 2. Kiểm tra token còn hiệu lực
-        if (!verificationToken.isValid()) {
-            if (verificationToken.isExpired()) {
-                log.error("[VerifyEmail] Token đã hết hạn");
-                throw new IllegalArgumentException("Token đã hết hạn. Vui lòng yêu cầu gửi lại email xác thực.");
-            }
-            if (verificationToken.isUsed()) {
-                log.error("[VerifyEmail] Token đã được sử dụng");
-                throw new IllegalArgumentException("Token đã được sử dụng.");
-            }
-        }
+        verificationToken.validate();
 
         // 3. Tìm user và xác thực
         User user = userRepository.findById(verificationToken.getUserId())
@@ -55,14 +46,13 @@ public class VerifyEmailUseCaseImpl implements VerifyEmailUseCase {
                 });
 
         if (user.isVerified()) {
-            log.warn("[VerifyEmail] User đã được xác thực trước đó: userId={}", user.getId());
-            throw new IllegalArgumentException("Tài khoản đã được xác thực trước đó.");
+            log.warn("User đã verify trước đó");
+            return;
         }
 
         // 4. Cập nhật trạng thái
-        user.setVerified(true);
+        user.verify();
         userRepository.save(user);
-        log.info("[VerifyEmail] User đã được xác thực: userId={}", user.getId());
 
         // 5. Đánh dấu token đã sử dụng
         verificationToken.markAsUsed();

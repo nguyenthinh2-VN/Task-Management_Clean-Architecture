@@ -27,6 +27,9 @@ public class VerificationTokenJpaEntity {
     private Long userId;
 
     @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
     private LocalDateTime expiryDate;
 
     @Column(nullable = false)

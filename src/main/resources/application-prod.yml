@@ -6,10 +6,10 @@ spring:
     url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${MYSQLUSER}
     password: ${MYSQLPASSWORD}
-
+  
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: false
 
 logging:

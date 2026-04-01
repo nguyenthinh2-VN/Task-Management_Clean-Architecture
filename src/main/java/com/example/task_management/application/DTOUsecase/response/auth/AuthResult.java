@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class AuthResult {
     private String accessToken;
     private String tokenType;
+    private boolean verified;
 }

@@ -50,29 +50,46 @@ public class ResendVerificationUseCaseImpl implements ResendVerificationUseCase 
             throw new IllegalArgumentException("Tài khoản đã được xác thực.");
         }
 
+        // 3. Tìm token mới nhất của user
+        Optional<VerificationToken> existingTokenOpt = tokenRepository.findLatestByUserId(user.getId());
+        VerificationToken token;
 
-        // 3. Kiểm tra cooldown (60 giây)
-        Optional<VerificationToken> existingToken = tokenRepository.findByUserId(user.getId());
-        if (existingToken.isPresent()) {
-            LocalDateTime createdAt = existingToken.get().getExpiryDate().minusHours(24); // Token được tạo cách đây
-            LocalDateTime now = LocalDateTime.now();
-            if (createdAt.plusSeconds(60).isAfter(now)) {
-                long secondsLeft = 60 - java.time.Duration.between(createdAt, now).getSeconds();
-                log.warn("[ResendVerification] Request quá nhanh, còn {} giây", secondsLeft);
-                throw new IllegalArgumentException("Vui lòng đợi " + secondsLeft + " giây trước khi gửi lại email.");
+        if (existingTokenOpt.isPresent()) {
+            VerificationToken existingToken = existingTokenOpt.get();
+
+            // 3a. Kiểm tra token hết hạn
+            if (!existingToken.isExpired() && !existingToken.isUsed()) {
+                // 3b. Token chưa hết hạn -> check cooldown
+                LocalDateTime createdAt = existingToken.getCreatedAt();
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime cooldownEnd = createdAt.plusSeconds(60);
+
+                if (cooldownEnd.isAfter(now)) {
+                    long secondsLeft = Math.max(0,
+                            java.time.Duration.between(now, cooldownEnd).getSeconds());
+
+                    log.warn("[ResendVerification] Request quá nhanh, còn {} giây", secondsLeft);
+                    throw new IllegalArgumentException(
+                            "Vui lòng đợi " + secondsLeft + " giây trước khi gửi lại email.");
+                }
             }
-            // Xóa token cũ
-            log.debug("[ResendVerification] Xóa token cũ");
-            tokenRepository.delete(existingToken.get());
+            // Token hết hạn hoặc đã qua cooldown -> ghi đè token cũ
+            log.debug("[ResendVerification] Ghi đè token cũ");
+        
+            existingToken.refresh();
+            token = existingToken;
+        } else {
+            // Chưa có token -> tạo mới
+            log.debug("[ResendVerification] Tạo token mới");
+            token = new VerificationToken(user.getId());
         }
 
-        // 4. Tạo token mới
-        VerificationToken newToken = new VerificationToken(user.getId());
-        tokenRepository.save(newToken);
-        log.debug("[ResendVerification] Tạo token mới cho userId={}", user.getId());
+        // 4. Lưu token
+        tokenRepository.save(token);
+        log.debug("[ResendVerification] Lưu token cho userId={}", user.getId());
 
         // 5. Gửi email
-        emailService.sendVerificationEmail(user.getEmail(), user.getUsername(), newToken.getToken());
+        emailService.sendVerificationEmail(user.getEmail(), user.getUsername(), token.getToken());
         log.info("[ResendVerification] Hoàn thành - đã gửi email cho userId={}", user.getId());
     }
 }

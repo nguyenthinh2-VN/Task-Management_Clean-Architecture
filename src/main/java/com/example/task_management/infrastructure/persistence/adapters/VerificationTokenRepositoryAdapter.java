@@ -35,6 +35,11 @@ public class VerificationTokenRepositoryAdapter implements VerificationTokenRepo
     }
 
     @Override
+    public Optional<VerificationToken> findLatestByUserId(Long userId) {
+        return jpaRepository.findTopByUserIdOrderByCreatedAtDesc(userId).map(this::toDomain);
+    }
+
+    @Override
     public void deleteByUserId(Long userId) {
         jpaRepository.deleteByUserId(userId);
     }
@@ -50,6 +55,7 @@ public class VerificationTokenRepositoryAdapter implements VerificationTokenRepo
                 .id(token.getId())
                 .token(token.getToken())
                 .userId(token.getUserId())
+                .createdAt(token.getCreatedAt())
                 .expiryDate(token.getExpiryDate())
                 .used(token.isUsed())
                 .build();
@@ -60,6 +66,7 @@ public class VerificationTokenRepositoryAdapter implements VerificationTokenRepo
         token.setId(entity.getId());
         token.setToken(entity.getToken());
         token.setUserId(entity.getUserId());
+        token.setCreatedAt(entity.getCreatedAt());
         token.setExpiryDate(entity.getExpiryDate());
         token.setUsed(entity.isUsed());
         return token;
