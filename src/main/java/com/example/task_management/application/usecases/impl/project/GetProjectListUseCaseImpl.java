@@ -2,22 +2,37 @@ package com.example.task_management.application.usecases.impl.project;
 
 import com.example.task_management.application.DTOUsecase.response.project.ProjectResult;
 import com.example.task_management.application.repositories.ProjectRepository;
+import com.example.task_management.application.repositories.UserRepository;
 import com.example.task_management.application.usecases.project.GetProjectListUseCase;
+import com.example.task_management.domain.entities.User;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GetProjectListUseCaseImpl implements GetProjectListUseCase {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public GetProjectListUseCaseImpl(ProjectRepository projectRepository) {
+    public GetProjectListUseCaseImpl(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public List<ProjectResult> getProjectsByOwner(Long ownerId) {
-        // TODO: implement logic
-        return null;
+    public List<ProjectResult> getProjectsByOwner(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng hiện tại trong hệ thống."));
+
+        return projectRepository.findAllByOwnerId(user.getId()).stream()
+                .map(project -> ProjectResult.builder()
+                        .id(project.getId())
+                        .name(project.getName())
+                        .description(project.getDescription())
+                        .ownerId(project.getOwnerId())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

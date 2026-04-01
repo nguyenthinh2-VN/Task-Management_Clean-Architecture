@@ -5,5 +5,5 @@ import java.util.List;
 
 // UC06 – Xem danh sách project
 public interface GetProjectListUseCase {
-    List<ProjectResult> getProjectsByOwner(Long ownerId);
+    List<ProjectResult> getProjectsByOwner(String email);
 }
