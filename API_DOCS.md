@@ -125,7 +125,33 @@ Mọi API yêu cầu Authen đều phải đính kèm Header:
 
 ## 2. Quản lý Dự án (Project)
 
-### 2.1 Tạo dự án mới
+### 2.1 Lấy danh sách dự án
+- **URL**: `GET /api/projects`
+- **Auth Required**: Yes
+- **Response** (200 OK):
+```json
+{
+    "status": 200,
+    "message": "Lấy danh sách dự án thành công",
+    "data": [
+        {
+            "id": 1,
+            "name": "Dự án Thiết kế Website",
+            "description": "Làm giao diện chuẩn UI/UX cho công ty ABC",
+            "ownerId": 1
+        },
+        {
+            "id": 2,
+            "name": "Dự án Mobile App",
+            "description": "Phát triển ứng dụng di động cho iOS và Android",
+            "ownerId": 1
+        }
+    ]
+}
+```
+- **Note**: Chỉ trả về các dự án mà user là owner.
+
+### 2.2 Tạo dự án mới
 - **URL**: `POST /api/projects`
 - **Auth Required**: Yes
 - **Body** (JSON):
@@ -150,7 +176,7 @@ Mọi API yêu cầu Authen đều phải đính kèm Header:
 ```
 - **Note**: Người tạo tự động trở thành `OWNER` và Status `ACCEPTED`.
 
-### 2.2 Xóa dự án
+### 2.3 Xóa dự án
 - **URL**: `DELETE /api/projects/{projectId}`
 - **Auth Required**: Yes (Yêu cầu phải là `OWNER` của dự án)
 - **Response** (200 OK):
