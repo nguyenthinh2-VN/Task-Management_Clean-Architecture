@@ -2,9 +2,6 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-COPY . .
+COPY target/Task_Management-0.0.1-SNAPSHOT.jar app.jar
 
-RUN chmod +x mvnw
-RUN ./mvnw clean package -DskipTests
-
-CMD ["sh", "-c", "java -jar target/*.jar"]
+CMD ["java", "-jar", "app.jar"]
