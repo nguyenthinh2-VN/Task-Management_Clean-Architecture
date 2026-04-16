@@ -492,6 +492,79 @@ Mọi API yêu cầu Authen đều phải đính kèm Header:
   - `403`: Assigner không phải thành viên ACCEPTED của project.
   - `404`: Task không tồn tại, không thuộc project, hoặc assignee không tồn tại.
 
+### 4.5 Cập nhật thông tin Task
+- **URL**: `PUT /api/projects/{projectId}/tasks/{taskId}`
+- **Auth Required**: Yes (Thành viên ACCEPTED của dự án)
+- **Body** (JSON):
+```json
+{
+    "title": "Thiết kế màn hình Login - Updated",
+    "description": "Mô tả cập nhật cho task"
+}
+```
+- **Response** (200 OK):
+```json
+{
+    "status": 200,
+    "message": "Cập nhật task thành công",
+    "data": {
+        "id": 1,
+        "title": "Thiết kế màn hình Login - Updated",
+        "description": "Mô tả cập nhật cho task",
+        "status": "TODO",
+        "projectId": 1,
+        "assigneeId": 5,
+        "position": 0
+    }
+}
+```
+- **Business Rules**:
+  - Chỉ cập nhật `title` và `description` của task.
+  - Title và description sẽ được normalize (trim whitespace) trước khi lưu.
+  - `TASK_UPDATED` activity log sẽ được tạo tự động với thông tin old/new values.
+- **Error Cases**:
+  - `403`: User không phải thành viên ACCEPTED của project.
+  - `404`: Task không tồn tại hoặc không thuộc project.
+
+### 4.6 Cập nhật trạng thái Task
+- **URL**: `PUT /api/projects/{projectId}/tasks/{taskId}/status`
+- **Auth Required**: Yes (Thành viên ACCEPTED của dự án)
+- **Body** (JSON):
+```json
+{
+    "status": "IN_PROGRESS"
+}
+```
+- **Valid Status Values**: `TODO`, `IN_PROGRESS`, `DONE`, `CANCELLED`
+- **Response** (200 OK):
+```json
+{
+    "status": 200,
+    "message": "Cập nhật trạng thái task thành công",
+    "data": {
+        "id": 1,
+        "title": "Thiết kế màn hình Login",
+        "description": "Mô tả task",
+        "status": "IN_PROGRESS",
+        "projectId": 1,
+        "assigneeId": 5,
+        "position": 0
+    }
+}
+```
+- **Business Rules**:
+  - Các chuyển đổi trạng thái hợp lệ:
+    - `TODO` → `IN_PROGRESS` (Bắt đầu task)
+    - `IN_PROGRESS` → `DONE` (Hoàn thành task)
+    - `TODO`/`IN_PROGRESS` → `CANCELLED` (Hủy task)
+    - `CANCELLED` → `TODO` (Restart task)
+    - `DONE` → `IN_PROGRESS` (Reopen task)
+  - `TASK_STATUS_UPDATED` activity log sẽ được tạo tự động với thông tin old/new status.
+- **Error Cases**:
+  - `400`: Chuyển đổi trạng thái không hợp lệ (ví dụ: DONE → TODO trực tiếp).
+  - `403`: User không phải thành viên ACCEPTED của project.
+  - `404`: Task không tồn tại hoặc không thuộc project.
+
 ---
 
 ## 5. Audit Logs (Activity Logs)

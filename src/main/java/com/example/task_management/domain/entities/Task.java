@@ -9,9 +9,10 @@ public class Task {
     private TaskStatus status;
     private Long projectId;
     private Long assigneeId;
-    private Integer position;  // thứ tự hiển thị trong project
+    private Integer position; // thứ tự hiển thị trong project
 
-    public Task() {}
+    public Task() {
+    }
 
     // ── Domain Methods (Bảo vệ chuyển đổi trạng thái) ──────────────
     public void start() {
@@ -61,6 +62,7 @@ public class Task {
 
     /**
      * Validate việc di chuyển task.
+     * 
      * @throws IllegalArgumentException nếu validation fail
      */
     public void validateMove(TaskStatus toStatus, Integer toPosition, Long expectedProjectId) {
@@ -82,27 +84,74 @@ public class Task {
         return this.projectId.equals(projectId);
     }
 
+    public void updateContent(String title, String description) {
+    if (title != null) {
+        if (title.isBlank()) throw new IllegalArgumentException("Tiêu đề không được để trống");
+        this.title = title.trim();
+    }
+
+    if (description != null) {
+        this.description = description.trim();
+    }
+}
+
     // ── Getters & Setters ──────────────────────────────────────────
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id; 
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getTitle() {
+        return title;
+    }
 
-    public TaskStatus getStatus() { return status; }
-    // Chỉ dùng để set giá trị ban đầu (từ Factory/Mapper), không dùng để thay đổi trạng thái
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    // Chỉ dùng để set giá trị ban đầu (từ Factory/Mapper), không dùng để thay đổi
+    // trạng thái
     // Để chuyển trạng thái: dùng start(), complete(), cancel()
-    public void setStatus(TaskStatus status) { this.status = status; }
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
 
-    public Long getProjectId() { return projectId; }
-    public void setProjectId(Long projectId) { this.projectId = projectId; }
+    public Long getProjectId() {
+        return projectId;
+    }
 
-    public Long getAssigneeId() { return assigneeId; }
-    public void setAssigneeId(Long assigneeId) { this.assigneeId = assigneeId; }
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
 
-    public Integer getPosition() { return position; }
-    public void setPosition(Integer position) { this.position = position; }
+    public Long getAssigneeId() {
+        return assigneeId;
+    }
+
+    public void setAssigneeId(Long assigneeId) {
+        this.assigneeId = assigneeId;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
 }

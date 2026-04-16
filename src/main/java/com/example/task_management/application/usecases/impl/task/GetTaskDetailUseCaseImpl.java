@@ -50,14 +50,6 @@ public class GetTaskDetailUseCaseImpl implements GetTaskDetailUseCase {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
 
-        // Rule 3: Validate user là thành viên ACCEPTED của project
-        ProjectMember membership = projectMemberRepository
-                .findByProjectIdAndUserId(projectId, user.getId())
-                .orElseThrow(() -> new ProjectAccessDeniedException("Bạn không phải thành viên của dự án này"));
-
-        if (membership.getInvitationStatus() != InvitationStatus.ACCEPTED) {
-            throw new ProjectAccessDeniedException("Bạn chưa chấp nhận lời mời vào dự án này");
-        }
 
         // Rule 4: Validate task tồn tại và thuộc về project
         Task task = taskRepository.findById(taskId)

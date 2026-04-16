@@ -26,28 +26,28 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Long validateProjectMember(Long projectId, String userEmail) {
+    public User validateProjectMember(Long projectId, String userEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> {
-                    log.error("[MoveTask] User không tồn tại");
+                    log.error("User không tồn tại");
                     return new IllegalArgumentException("Người dùng không tồn tại");
                 });
-        log.debug("[MoveTask] User tồn tại: id={}", user.getId());
+        log.debug("User tồn tại: id={}", user.getId());
 
         ProjectMember membership = projectMemberRepository
                 .findByProjectIdAndUserId(projectId, user.getId())
                 .orElseThrow(() -> {
-                    log.error("[MoveTask] User không phải thành viên project: userId={}", user.getId());
+                    log.error("User không phải thành viên project: userId={}", user.getId());
                     return new IllegalArgumentException("Bạn không phải thành viên của dự án này");
                 });
 
         if (membership.getInvitationStatus() != InvitationStatus.ACCEPTED) {
-            log.error("[MoveTask] User chưa ACCEPTED: userId={}, status={}",
+            log.error("User chưa ACCEPTED: userId={}, status={}",
                     user.getId(), membership.getInvitationStatus());
             throw new IllegalArgumentException("Bạn chưa chấp nhận lời mời vào dự án này");
         }
-        log.debug("[MoveTask] User permission OK");
-        return user.getId();
+        log.debug("User permission OK");
+        return user;
     }
 
     @Override

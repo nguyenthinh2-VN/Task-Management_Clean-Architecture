@@ -14,6 +14,8 @@ import com.example.task_management.application.DTOUsecase.request.LogActivityReq
 import com.example.task_management.domain.enums.ActionType;
 import com.example.task_management.domain.enums.EntityType;
 import java.util.Map;
+
+import com.example.task_management.domain.services.PermissionService;
 import com.example.task_management.interfaces.exceptions.ProjectAccessDeniedException;
 import com.example.task_management.interfaces.exceptions.ProjectNotFoundException;
 import com.example.task_management.interfaces.exceptions.TaskNotFoundException;
@@ -29,19 +31,19 @@ public class DeleteTaskUseCaseImpl implements DeleteTaskUseCase {
 
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
-    private final ProjectMemberRepository projectMemberRepository;
+    private final PermissionService permissionService;
     private final UserRepository userRepository;
     private final LogActivityUseCase logActivityUseCase;
 
     public DeleteTaskUseCaseImpl(
             TaskRepository taskRepository,
             ProjectRepository projectRepository,
-            ProjectMemberRepository projectMemberRepository,
+            PermissionService permissionService,
             UserRepository userRepository,
             LogActivityUseCase logActivityUseCase) {
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
-        this.projectMemberRepository = projectMemberRepository;
+        this.permissionService = permissionService;
         this.userRepository = userRepository;
         this.logActivityUseCase = logActivityUseCase;
     }
@@ -56,14 +58,7 @@ public class DeleteTaskUseCaseImpl implements DeleteTaskUseCase {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
 
-        // Rule 3: Validate user là thành viên ACCEPTED của project
-        ProjectMember membership = projectMemberRepository
-                .findByProjectIdAndUserId(projectId, user.getId())
-                .orElseThrow(() -> new ProjectAccessDeniedException("Bạn không phải thành viên của dự án này"));
-
-        if (membership.getInvitationStatus() != InvitationStatus.ACCEPTED) {
-            throw new ProjectAccessDeniedException("Bạn chưa chấp nhận lời mời vào dự án này");
-        }
+        permissionService.validateProjectMember(projectId, userEmail);
 
         // Rule 4: Validate task tồn tại và thuộc về project
         Task task = taskRepository.findById(taskId)

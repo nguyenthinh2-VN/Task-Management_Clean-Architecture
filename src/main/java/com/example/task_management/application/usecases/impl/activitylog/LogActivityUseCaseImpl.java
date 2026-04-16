@@ -36,8 +36,6 @@ public class LogActivityUseCaseImpl implements LogActivityUseCase {
                     .entityId(request.getEntityId())
                     .description(request.getDescription())
                     .metadata(request.getMetadata())
-                    .ipAddress(request.getIpAddress())
-                    .userAgent(request.getUserAgent())
                     .build();
 
             activityLogRepository.save(log);

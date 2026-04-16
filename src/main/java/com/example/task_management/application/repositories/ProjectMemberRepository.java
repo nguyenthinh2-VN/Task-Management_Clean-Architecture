@@ -1,6 +1,7 @@
 package com.example.task_management.application.repositories;
 
 import com.example.task_management.domain.entities.ProjectMember;
+import com.example.task_management.domain.entities.User;
 import com.example.task_management.domain.enums.InvitationStatus;
 import java.util.List;
 import java.util.Optional;

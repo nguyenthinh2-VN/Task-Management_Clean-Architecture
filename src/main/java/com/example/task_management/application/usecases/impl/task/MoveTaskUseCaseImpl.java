@@ -1,6 +1,7 @@
 package com.example.task_management.application.usecases.impl.task;
 
 import com.example.task_management.application.DTOUsecase.response.task.TaskResult;
+import com.example.task_management.domain.entities.User;
 import com.example.task_management.domain.services.PermissionService;
 import com.example.task_management.application.usecases.activitylog.LogActivityUseCase;
 import com.example.task_management.application.DTOUsecase.request.LogActivityRequest;
@@ -64,16 +65,15 @@ public class MoveTaskUseCaseImpl implements MoveTaskUseCase {
                 task.getId(), task.getStatus(), task.getPosition());
 
         // Parse status
-        // Parse
         TaskStatus toStatus = taskStatusParser.parseStatus(request.getToStatus());
         log.debug("[MoveTask] Parsed toStatus={}", toStatus);
 
-// Validate
+        // Validate
         log.debug("[MoveTask] Validating move...");
         task.validateMove(toStatus, request.getToPosition(), projectId);
 
-        Long userId = permissionService.validateProjectMember(projectId, userEmail);
-        log.debug("[MoveTask] Validation OK userId={}", userId);
+        User user = permissionService.validateProjectMember(projectId, userEmail);
+        log.debug("[MoveTask] Validation OK userId={}", user.getId());
 
         // Lưu giá trị cũ trước khi thực hiện move
         TaskStatus fromStatus = task.getStatus();
@@ -97,7 +97,7 @@ public class MoveTaskUseCaseImpl implements MoveTaskUseCase {
         // Ghi log hoạt động (async)
         logActivityUseCase.logActivity(LogActivityRequest.builder()
                 .projectId(projectId)
-                .userId(userId)
+                .userId(user.getId())
                 .actionType(ActionType.TASK_MOVED)
                 .entityType(EntityType.TASK)
                 .entityId(taskId)
